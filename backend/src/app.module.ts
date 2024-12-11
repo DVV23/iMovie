@@ -1,12 +1,13 @@
+import { cookieSession } from 'cookie-session';
 import { MiddlewareConsumer, Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
 import { XSSMiddleware } from './middleware/xssMiddleware.middleware';
 import { AuthModule } from './auth/auth.module';
 import { AuthController } from './auth/auth.controller';
-
+const cookieSession = require('cookie-session');
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -20,9 +21,14 @@ import { AuthController } from './auth/auth.controller';
   providers: [AppService],
 })
 export class AppModule {
-  // constructor() {}
-  // configure(consumer: MiddlewareConsumer) {
-  //   consumer.apply(XSSMiddleware).forRoutes('*');
-  // }
-  ////////////// to check
+  constructor(private configService: ConfigService) {}
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(
+        cookieSession({
+          keys: [this.configService.get('COOKIE_KEY')],
+        }),
+      )
+      .forRoutes('*');
+  }
 }

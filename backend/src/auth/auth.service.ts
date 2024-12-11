@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -13,7 +12,7 @@ import { SigninDTO } from 'src/dtos/signinDTO.dto';
 import { JwtPayload } from 'src/schemas/jwtPayload.interface';
 import { checkPassword } from 'src/utils/utils';
 import { SignupDTO } from './../dtos/signupDTO.dto';
-import { User } from './../schemas/user.schema';
+import { UserDocument } from 'src/schemas/user.schema';
 declare global {
   namespace Express {
     interface Response {
@@ -24,12 +23,16 @@ declare global {
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel('User') private readonly userModel: Model<User>,
+    @InjectModel('User') private readonly userModel: Model<UserDocument>,
     private jwtService: JwtService,
     private configService: ConfigService,
   ) {}
 
-  async createUser({ email, password, name }: SignupDTO): Promise<User> {
+  async createUser({
+    email,
+    password,
+    name,
+  }: SignupDTO): Promise<UserDocument> {
     try {
       const user = this.userModel.create({ email, password, name });
       return user;
@@ -40,13 +43,15 @@ export class AuthService {
   async login(
     { email, password }: SigninDTO,
     response: Response,
+    session: any,
   ): Promise<void> {
-    const newUser: User = await this.userModel
+    const newUser: UserDocument = await this.userModel
       .findOne({ email })
       .select('+password');
     if (!newUser) {
       throw new NotFoundException('User not found');
     }
+
     const passCheck = await checkPassword(password, newUser.password);
     if (!passCheck) throw new UnauthorizedException('Password is incorrect');
     const payload: JwtPayload = { email };
@@ -68,5 +73,9 @@ export class AuthService {
     }
     response.clearCookie('Authentication').clearCookie('jwt');
     return response.status(201).send({ message: 'You have logged out.' });
+  }
+  async findUser(userEmail: string): Promise<any> {
+    const user = await this.userModel.findOne({ email: userEmail });
+    return user;
   }
 }

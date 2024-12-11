@@ -1,22 +1,15 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { Schema, Document } from 'mongoose';
 import validator from 'validator';
 import * as bcrypt from 'bcryptjs';
-
-export type UserDocument = HydratedDocument<User>;
-
-@Schema()
-export class User {
-  @Prop({
+export const UserSchema = new Schema({
+  email: {
     type: String,
     required: true,
     unique: true,
-    validate: [validator.isEmail, 'Email is not valid'],
+    validate: [validator.isEmail, 'Email should be valid'],
     lowercase: true,
-  })
-  email: string;
-
-  @Prop({
+  },
+  password: {
     type: String,
     required: true,
     validate: [
@@ -26,30 +19,44 @@ export class User {
     minLength: [8, 'Password should consist of at least 8 characters'],
     maxLength: [32, 'Maximum password length is 20 characters'],
     select: false,
-  })
-  password: string;
-
-  @Prop({
+  },
+  //   confirmPassword: {
+  //     type: String,
+  //     required: true,
+  //     validate: {
+  //       validator: function (el: string) {
+  //         return el === this.password;
+  //       },
+  //       message: 'Passwords are not the same!',
+  //     },
+  //     select: false,
+  //   },
+  role: {
     type: String,
     enum: ['user', 'admin'],
     default: 'user',
-  })
-  role: string;
-
-  @Prop({
+  },
+  name: {
     type: String,
     required: true,
     minLength: [2, 'Name should consist at least out of 2 characters'],
     maxLength: [16, 'Name should consist maximum out of 16 characters'],
-  })
-  name: string;
-}
-
-export const UserSchema = SchemaFactory.createForClass(User);
+  },
+});
 
 UserSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   let salt = await bcrypt.genSalt();
   this.password = await bcrypt.hash(this.password, salt);
+  //   this.confirmPassword = undefined;
   next();
 });
+
+export interface User extends Document {
+  id: string;
+  email: string;
+  password: string;
+  //   confirmPassword: string;
+  name: string;
+  role?: string;
+}
