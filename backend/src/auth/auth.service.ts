@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -13,7 +14,13 @@ import { JwtPayload } from 'src/schemas/jwtPayload.interface';
 import { checkPassword } from 'src/utils/utils';
 import { SignupDTO } from './../dtos/signupDTO.dto';
 import { User } from './../schemas/user.schema';
-
+declare global {
+  namespace Express {
+    interface Response {
+      cookies: { [key: string]: string };
+    }
+  }
+}
 @Injectable()
 export class AuthService {
   constructor(
@@ -30,7 +37,10 @@ export class AuthService {
       return err;
     }
   }
-  async login({ email, password }: SigninDTO, response: Response) {
+  async login(
+    { email, password }: SigninDTO,
+    response: Response,
+  ): Promise<void> {
     const newUser: User = await this.userModel
       .findOne({ email })
       .select('+password');
@@ -49,5 +59,14 @@ export class AuthService {
       httpOnly: true,
       expires,
     });
+  }
+  async logout(response: Response): Promise<any> {
+    if (!response.req.cookies.Authentication) {
+      return response
+        .status(400)
+        .send({ message: 'You are already logged out' });
+    }
+    response.clearCookie('Authentication').clearCookie('jwt');
+    return response.status(201).send({ message: 'You have logged out.' });
   }
 }

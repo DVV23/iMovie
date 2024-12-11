@@ -1,4 +1,12 @@
-import { Body, Controller, Post, Request, Res } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Post,
+  Req,
+  Request,
+  Res,
+} from '@nestjs/common';
 import { SigninDTO } from 'src/dtos/signinDTO.dto';
 import { SignupDTO } from 'src/dtos/signupDTO.dto';
 import { User } from 'src/schemas/user.schema';
@@ -16,5 +24,9 @@ export class AuthController {
   async signin(@Body() body: SigninDTO, @Res() response: Response) {
     await this.authService.login(body, response);
     return response.status(200).send({ message: 'Login successful' });
+  }
+  @Post('/logout')
+  async logout(@Res() response: Response) {
+    return this.authService.logout(response);
   }
 }
