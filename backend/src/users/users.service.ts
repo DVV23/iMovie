@@ -20,4 +20,7 @@ export class UsersService {
   async findUser(email: string): Promise<User> {
     return await this.userModel.findOne({ email }).select('+password');
   }
+  async getAllUsers(): Promise<User[]> {
+    return await this.userModel.find();
+  }
 }
