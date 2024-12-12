@@ -6,11 +6,12 @@ import { Model } from 'mongoose';
 import { Strategy, ExtractJwt } from 'passport-jwt';
 import { JwtPayload } from 'src/schemas/jwtPayload.interface';
 import { User } from 'src/schemas/user.schema';
+import { UsersService } from 'src/users/users.service';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
-    @InjectModel('User') private readonly userModel: Model<User>,
-    private configService: ConfigService,
+    private readonly usersService: UsersService,
+    private readonly configService: ConfigService,
   ) {
     super({
       secretOrKey: configService.get('JWT_SECRET'),
@@ -22,7 +23,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate({ email }: JwtPayload): Promise<User> {
-    const user: User = await this.userModel.findOne({ email });
+    const user: User = await this.usersService.findUser(email);
     console.log(user);
     if (!user || !email) {
       throw new UnauthorizedException();

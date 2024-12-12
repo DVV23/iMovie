@@ -1,12 +1,12 @@
-import { cookieSession } from 'cookie-session';
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { cookieSession } from 'cookie-session';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { DatabaseModule } from './database/database.module';
-import { XSSMiddleware } from './middleware/xssMiddleware.middleware';
-import { AuthModule } from './auth/auth.module';
 import { AuthController } from './auth/auth.controller';
+import { AuthModule } from './auth/auth.module';
+import { DatabaseModule } from './database/database.module';
+import { UsersModule } from './users/users.module';
 const cookieSession = require('cookie-session');
 @Module({
   imports: [
@@ -16,6 +16,7 @@ const cookieSession = require('cookie-session');
     }),
     DatabaseModule,
     AuthModule,
+    UsersModule,
   ],
   controllers: [AppController, AuthController],
   providers: [AppService],

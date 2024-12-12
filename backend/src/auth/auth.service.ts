@@ -10,9 +10,10 @@ import { Response } from 'express';
 import { Model } from 'mongoose';
 import { SigninDTO } from 'src/dtos/signinDTO.dto';
 import { JwtPayload } from 'src/schemas/jwtPayload.interface';
+import { User, UserDocument } from 'src/schemas/user.schema';
+import { UsersService } from 'src/users/users.service';
 import { checkPassword } from 'src/utils/utils';
 import { SignupDTO } from './../dtos/signupDTO.dto';
-import { UserDocument } from 'src/schemas/user.schema';
 declare global {
   namespace Express {
     interface Response {
@@ -23,19 +24,14 @@ declare global {
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel('User') private readonly userModel: Model<UserDocument>,
     private jwtService: JwtService,
     private configService: ConfigService,
+    private usersService: UsersService,
   ) {}
 
-  async createUser({
-    email,
-    password,
-    name,
-  }: SignupDTO): Promise<UserDocument> {
+  async signup(body: SignupDTO): Promise<User> {
     try {
-      const user = this.userModel.create({ email, password, name });
-      return user;
+      return await this.usersService.signup(body);
     } catch (err) {
       return err;
     }
@@ -45,9 +41,7 @@ export class AuthService {
     response: Response,
     session: any,
   ): Promise<void> {
-    const newUser: UserDocument = await this.userModel
-      .findOne({ email })
-      .select('+password');
+    const newUser = await this.usersService.findUser(email);
     if (!newUser) {
       throw new NotFoundException('User not found');
     }
@@ -73,9 +67,5 @@ export class AuthService {
     }
     response.clearCookie('Authentication').clearCookie('jwt');
     return response.status(201).send({ message: 'You have logged out.' });
-  }
-  async findUser(userEmail: string): Promise<any> {
-    const user = await this.userModel.findOne({ email: userEmail });
-    return user;
   }
 }

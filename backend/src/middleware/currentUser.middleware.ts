@@ -1,7 +1,7 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
-import { Request, Response, NextFunction } from 'express';
-import { AuthService } from 'src/auth/auth.service';
+import { NextFunction, Response } from 'express';
 import { UserDocument } from 'src/schemas/user.schema';
+import { UsersService } from 'src/users/users.service';
 
 declare global {
   namespace Express {
@@ -13,11 +13,11 @@ declare global {
 
 @Injectable()
 export class CurrentUserMiddleware implements NestMiddleware {
-  constructor(private authService: AuthService) {}
+  constructor(private usersService: UsersService) {}
   async use(request: any, response: Response, next: NextFunction) {
     const { email } = request.session || {};
     if (email) {
-      const user = await this.authService.findUser(email);
+      const user = await this.usersService.findUser(email);
       request.currentUser = user;
     }
     next();

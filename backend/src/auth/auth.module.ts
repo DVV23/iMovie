@@ -1,13 +1,15 @@
 import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
+import { CurrentUserMiddleware } from 'src/middleware/currentUser.middleware';
+import { JwtStrategy } from 'src/strategies/jwt.strategy';
+import { UsersService } from 'src/users/users.service';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { UsersModule } from 'src/users/users.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { PassportModule } from '@nestjs/passport';
-import { JwtModule } from '@nestjs/jwt';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { JwtStrategy } from 'src/strategies/jwt.strategy';
-import { UserSchema, User } from 'src/schemas/user.schema';
-import { CurrentUserMiddleware } from 'src/middleware/currentUser.middleware';
+import { User, UserSchema } from 'src/schemas/user.schema';
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
@@ -24,7 +26,7 @@ import { CurrentUserMiddleware } from 'src/middleware/currentUser.middleware';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, UsersService],
   exports: [AuthService, JwtStrategy, PassportModule],
 })
 export class AuthModule {
