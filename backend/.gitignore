@@ -10,7 +10,8 @@ build/
 
 # Environment files
 .env
-.env.*.local
+.env.dev
+.env.prod
 
 # Log files
 *.log
