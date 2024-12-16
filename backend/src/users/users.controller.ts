@@ -10,7 +10,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
   @UseGuards(JwtAuthGuard)
   @UseGuards(AdminGuard)
-  @Get('')
+  @Get('/')
   async getAllUsers(): Promise<User[] | string> {
     try {
       const users = await this.usersService.getAllUsers();

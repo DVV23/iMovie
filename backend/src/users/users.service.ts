@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { SignupDTO } from 'src/dtos/signupDTO.dto';
 import { User, UserDocument } from 'src/schemas/user.schema';
+import { checkPassword } from 'src/utils/utils';
 
 @Injectable()
 export class UsersService {
@@ -22,5 +23,11 @@ export class UsersService {
   }
   async getAllUsers(): Promise<User[]> {
     return await this.userModel.find();
+  }
+  async verifyUser(email: string, password: string): Promise<User> {
+    const user = await this.userModel.findOne({ email }).select('+password');
+    const validPassword = checkPassword(password, user.password);
+    if (!user || !validPassword) throw new NotFoundException();
+    return user;
   }
 }
