@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import mongoose, { HydratedDocument } from 'mongoose';
 import validator from 'validator';
 import * as bcrypt from 'bcryptjs';
 
@@ -43,6 +43,11 @@ export class User {
     maxLength: [16, 'Name should consist maximum out of 16 characters'],
   })
   name: string;
+  @Prop({
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: 'Review',
+  })
+  reviews: mongoose.Schema.Types.ObjectId[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

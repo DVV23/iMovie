@@ -76,6 +76,11 @@ export class Movie {
     type: String,
   })
   updatedAt: string;
+  @Prop({
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: 'Review',
+  })
+  reviews: mongoose.Schema.Types.ObjectId[];
 }
 
 export const MovieSchema = SchemaFactory.createForClass(Movie);
