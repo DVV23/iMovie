@@ -4,11 +4,13 @@ import {
   InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { SignupDTO } from 'src/dtos/signupDTO.dto';
 import { UpdatePasswordDTO } from 'src/dtos/updatePasswordDTO';
+import { AdminGuard } from 'src/guards/AdminGuard.guard';
 import { User, UserDocument } from 'src/schemas/user.schema';
 import { checkPassword } from 'src/utils/utils';
 
@@ -25,9 +27,11 @@ export class UsersService {
       return err;
     }
   }
+  @UseGuards(AdminGuard)
   async findUser(email: string): Promise<User> {
     return await this.userModel.findOne({ email }).select('+password');
   }
+  @UseGuards(AdminGuard)
   async getAllUsers(): Promise<User[]> {
     return await this.userModel.find();
   }
