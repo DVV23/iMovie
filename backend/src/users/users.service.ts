@@ -19,12 +19,22 @@ export class UsersService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {}
-  async signup({ email, password, name }: SignupDTO): Promise<User> | null {
+  async signup({
+    email,
+    password,
+    passwordConfirm,
+    name,
+  }: SignupDTO): Promise<User> | null {
     try {
-      const user = this.userModel.create({ email, password, name });
+      const user = this.userModel.create({
+        email,
+        password,
+        passwordConfirm,
+        name,
+      });
       return user;
     } catch (err) {
-      return err;
+      throw new BadRequestException(err.message);
     }
   }
   @UseGuards(AdminGuard)

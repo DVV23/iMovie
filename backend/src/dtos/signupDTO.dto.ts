@@ -13,6 +13,9 @@ export class SignupDTO {
   @IsStrongPassword()
   password: string;
   @IsNotEmpty()
+  @IsStrongPassword()
+  passwordConfirm: string;
+  @IsNotEmpty()
   @IsString()
   name: string;
 }

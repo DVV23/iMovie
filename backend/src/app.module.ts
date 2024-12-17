@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { DatabaseModule } from './database/database.module';
 import { UsersModule } from './users/users.module';
 import { MoviesModule } from './movies/movies.module';
+import { ReviewsModule } from './reviews/reviews.module';
 const cookieSession = require('cookie-session');
 @Module({
   imports: [
@@ -19,6 +20,7 @@ const cookieSession = require('cookie-session');
     AuthModule,
     UsersModule,
     MoviesModule,
+    ReviewsModule,
   ],
   controllers: [AppController, AuthController],
   providers: [AppService],

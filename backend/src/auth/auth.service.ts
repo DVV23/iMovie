@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -33,7 +34,7 @@ export class AuthService {
     try {
       return await this.usersService.signup(body);
     } catch (err) {
-      return err;
+      throw new BadRequestException(err.message);
     }
   }
   async login(
@@ -41,7 +42,6 @@ export class AuthService {
     response: Response,
     session: any,
   ): Promise<void> {
-    console.log(email, password);
     const newUser = await this.usersService.findUser(email);
     console.log(newUser);
     if (!newUser) {

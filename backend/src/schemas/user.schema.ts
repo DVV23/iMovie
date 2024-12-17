@@ -31,6 +31,18 @@ export class User {
 
   @Prop({
     type: String,
+    required: [true, 'Please confirm your password'],
+    validate: {
+      validator: function (val: string) {
+        return val === this.password;
+      },
+      message: 'Password are not same',
+    },
+    select: false,
+  })
+  passwordConfirm: string;
+  @Prop({
+    type: String,
     enum: ['user', 'admin'],
     default: 'user',
   })
@@ -58,6 +70,7 @@ UserSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   let salt = await bcrypt.genSalt();
   this.password = await bcrypt.hash(this.password, salt);
+  this.passwordConfirm = undefined;
   next();
 });
 
