@@ -1,10 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
-import { Movie } from './movies.schema';
 
 export type ReviewDocument = HydratedDocument<Review>;
 @Schema()
-class Review {
+export class Review {
   @Prop({
     type: String,
     required: true,
@@ -27,3 +26,10 @@ class Review {
 }
 
 export const ReviewSchema = SchemaFactory.createForClass(Review);
+
+ReviewSchema.pre(/^find/, async function (this: ReviewDocument, next) {
+  this.populate({
+    path: '',
+  });
+  next();
+});

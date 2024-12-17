@@ -41,6 +41,8 @@ export class User {
     required: true,
     minLength: [2, 'Name should consist at least out of 2 characters'],
     maxLength: [16, 'Name should consist maximum out of 16 characters'],
+    unique: true,
+    lowercase: true,
   })
   name: string;
   @Prop({
@@ -56,5 +58,13 @@ UserSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   let salt = await bcrypt.genSalt();
   this.password = await bcrypt.hash(this.password, salt);
+  next();
+});
+
+UserSchema.pre(/^find/, async function (this: UserDocument, next) {
+  this.populate({
+    path: 'reviews',
+    select: '-__v',
+  });
   next();
 });

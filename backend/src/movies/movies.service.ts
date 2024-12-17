@@ -25,7 +25,7 @@ export class MoviesService {
       result.save({ validateBeforeSave: true });
       return 'Movie succesfully created';
     } catch (err) {
-      throw new InternalServerErrorException('Failed while creating a movie');
+      throw new InternalServerErrorException(err.message);
     }
   }
 }

@@ -16,7 +16,7 @@ export class Movie {
     type: String,
     required: [true, 'Title is required'],
   })
-  title: String;
+  title: string;
   @Prop({
     type: String,
     required: [true, 'Description is required'],
@@ -28,7 +28,7 @@ export class Movie {
     type: [String],
     required: true,
   })
-  genre: String[];
+  genre: string[];
   @Prop({
     type: Number,
     required: true,
@@ -87,5 +87,22 @@ export const MovieSchema = SchemaFactory.createForClass(Movie);
 
 MovieSchema.pre('save', async function (next) {
   this.updatedAt = new Date().toISOString();
+  next();
+});
+// MovieSchema.pre(/^find/, async function (this: MovieDocument, next) {
+//   this.select('-__v');
+//   next();
+// });
+MovieSchema.pre(/^find/, async function (this: MovieDocument, next) {
+  // const query = this as Query<MovieDocument, Movie>;
+  // query.populate({
+  //   path: 'reviews',
+  //   select: '-__v',
+  // });
+  // next();
+  this.populate({
+    path: 'reviews',
+    select: '-__v ',
+  });
   next();
 });
