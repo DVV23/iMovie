@@ -6,12 +6,10 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { InjectModel } from '@nestjs/mongoose';
 import { Response } from 'express';
-import { Model } from 'mongoose';
 import { SigninDTO } from 'src/dtos/signinDTO.dto';
 import { JwtPayload } from 'src/schemas/jwtPayload.interface';
-import { User, UserDocument } from 'src/schemas/user.schema';
+import { User } from 'src/schemas/user.schema';
 import { UsersService } from 'src/users/users.service';
 import { checkPassword } from 'src/utils/utils';
 import { SignupDTO } from './../dtos/signupDTO.dto';
@@ -43,7 +41,6 @@ export class AuthService {
     session: any,
   ): Promise<void> {
     const newUser = await this.usersService.findUser(email);
-    console.log(newUser);
     if (!newUser) {
       throw new NotFoundException('User not found');
     }

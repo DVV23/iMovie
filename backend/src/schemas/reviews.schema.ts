@@ -5,6 +5,10 @@ export type ReviewDocument = HydratedDocument<Review>;
 @Schema()
 export class Review {
   @Prop({
+    type: mongoose.Schema.ObjectId,
+  })
+  _id: mongoose.Schema.Types.ObjectId;
+  @Prop({
     type: String,
     required: true,
     minlength: [2, 'Review should consist at least minimum of 2 symbols'],
@@ -29,7 +33,11 @@ export const ReviewSchema = SchemaFactory.createForClass(Review);
 
 ReviewSchema.pre(/^find/, async function (this: ReviewDocument, next) {
   this.populate({
-    path: '',
+    path: 'forMovie',
+  });
+  this.populate({
+    path: 'createdByUser',
+    select: '-__v',
   });
   next();
 });

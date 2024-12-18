@@ -1,10 +1,20 @@
-import { Body, Controller, Delete, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { MoviesService } from './movies.service';
 import { JwtAuthGuard } from 'src/guards/JWTGuard.guard';
 import { Movie } from 'src/schemas/movies.schema';
 import { GetCurrentUser } from 'src/decorators/currentUser.decorator';
 import { User } from 'src/schemas/user.schema';
 import { CreateMovieDTO } from './dtos/createMovieDTO.dto';
+import { UpdateMovieDTO } from './dtos/updateMovieDTO.dto';
 
 @Controller('movies')
 @UseGuards(JwtAuthGuard)
@@ -25,6 +35,16 @@ export class MoviesController {
   @UseGuards(JwtAuthGuard)
   @Delete('/deleteMovie')
   async deleteMovie(): Promise<void> {}
+
   @Get('/:id')
-  async getMovieById() {}
+  async getMovieById(@Param('id') id: string): Promise<Movie> {
+    return await this.moviesService.getMovieById(id);
+  }
+  @Patch('/:id/updateMovie')
+  async updateMovie(
+    @Param('id') id: string,
+    @Body() body: UpdateMovieDTO,
+  ): Promise<Movie> {
+    return await this.moviesService.updateMovie(id, body);
+  }
 }

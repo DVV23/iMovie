@@ -13,6 +13,10 @@ export type MovieDocument = HydratedDocument<Movie>;
 @Schema()
 export class Movie {
   @Prop({
+    type: mongoose.Schema.ObjectId,
+  })
+  _id: mongoose.Schema.Types.ObjectId;
+  @Prop({
     type: String,
     required: [true, 'Title is required'],
   })

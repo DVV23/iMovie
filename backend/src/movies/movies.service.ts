@@ -7,6 +7,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Movie } from 'src/schemas/movies.schema';
 import { CreateMovieDTO } from './dtos/createMovieDTO.dto';
+import { UpdateMovieDTO } from './dtos/updateMovieDTO.dto';
 
 @Injectable()
 export class MoviesService {
@@ -27,5 +28,22 @@ export class MoviesService {
     } catch (err) {
       throw new InternalServerErrorException(err.message);
     }
+  }
+  async updateMovie(id: string, body: UpdateMovieDTO): Promise<Movie> {
+    const movie = await this.movieModel.findByIdAndUpdate(id, body, {
+      new: true,
+    });
+    if (!movie) {
+      throw new NotFoundException('Movie not found');
+    }
+    await movie.save({ validateBeforeSave: false });
+    return movie;
+  }
+  async getMovieById(id: string): Promise<Movie> {
+    const movie = await this.movieModel.findById(id).select('-__v');
+    if (!movie) {
+      throw new NotFoundException('Movie not found');
+    }
+    return movie;
   }
 }

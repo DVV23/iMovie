@@ -8,6 +8,10 @@ export type UserDocument = HydratedDocument<User>;
 @Schema()
 export class User {
   @Prop({
+    type: mongoose.Schema.ObjectId,
+  })
+  _id: mongoose.Schema.Types.ObjectId;
+  @Prop({
     type: String,
     required: true,
     unique: true,
