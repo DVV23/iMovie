@@ -4,15 +4,12 @@ import mongoose, { HydratedDocument } from 'mongoose';
 export type ReviewDocument = HydratedDocument<Review>;
 @Schema()
 export class Review {
-  @Prop({
-    type: mongoose.Schema.ObjectId,
-  })
-  _id: mongoose.Schema.Types.ObjectId;
+  _id: mongoose.Types.ObjectId;
   @Prop({
     type: String,
     required: true,
     minlength: [2, 'Review should consist at least minimum of 2 symbols'],
-    maxlength: [2, 'Review should consist maximum of 255 symbols'],
+    maxlength: [1000, 'Review should consist maximum of 1000 symbols'],
   })
   review: string;
   @Prop({

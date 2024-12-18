@@ -12,10 +12,8 @@ export type MovieDocument = HydratedDocument<Movie>;
 
 @Schema()
 export class Movie {
-  @Prop({
-    type: mongoose.Schema.ObjectId,
-  })
-  _id: mongoose.Schema.Types.ObjectId;
+  _id: mongoose.Types.ObjectId;
+
   @Prop({
     type: String,
     required: [true, 'Title is required'],
@@ -81,10 +79,10 @@ export class Movie {
   })
   updatedAt: string;
   @Prop({
-    type: [mongoose.Schema.Types.ObjectId],
+    type: [mongoose.Types.ObjectId],
     ref: 'Review',
   })
-  reviews: mongoose.Schema.Types.ObjectId[];
+  reviews: mongoose.Types.ObjectId[];
 }
 
 export const MovieSchema = SchemaFactory.createForClass(Movie);

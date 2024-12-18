@@ -15,15 +15,20 @@ export class MoviesService {
     @InjectModel(Movie.name) private readonly movieModel: Model<Movie>,
   ) {}
 
-  async getMovies(): Promise<Movie[]> {
-    const movies = await this.movieModel.find();
-    if (!movies) throw new NotFoundException('No movies yet');
-    return movies;
+  async getMovies(id?: string): Promise<Movie[] | Movie> {
+    if (id) {
+      const movie = await this.movieModel.findById(id);
+      if (!movie) throw new NotFoundException('No movie found');
+      return movie;
+    } else {
+      const movies = await this.movieModel.find();
+      if (!movies) throw new NotFoundException('No movies yet');
+      return movies;
+    }
   }
   async createMovie(body: CreateMovieDTO): Promise<void | string> {
     try {
       const result = await this.movieModel.create(body);
-      result.save({ validateBeforeSave: true });
       return 'Movie succesfully created';
     } catch (err) {
       throw new InternalServerErrorException(err.message);
@@ -37,13 +42,6 @@ export class MoviesService {
       throw new NotFoundException('Movie not found');
     }
     await movie.save({ validateBeforeSave: false });
-    return movie;
-  }
-  async getMovieById(id: string): Promise<Movie> {
-    const movie = await this.movieModel.findById(id).select('-__v');
-    if (!movie) {
-      throw new NotFoundException('Movie not found');
-    }
     return movie;
   }
 }

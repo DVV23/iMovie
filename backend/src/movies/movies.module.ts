@@ -4,6 +4,7 @@ import { Movie, MovieSchema } from 'src/schemas/movies.schema';
 import { MoviesController } from './movies.controller';
 import { MoviesService } from './movies.service';
 import { Review, ReviewSchema } from 'src/schemas/reviews.schema';
+import { ReviewsService } from 'src/reviews/reviews.service';
 
 @Module({
   imports: [
@@ -12,7 +13,7 @@ import { Review, ReviewSchema } from 'src/schemas/reviews.schema';
       { name: Review.name, schema: ReviewSchema },
     ]),
   ],
-  providers: [MoviesService],
+  providers: [MoviesService, ReviewsService],
   controllers: [MoviesController],
 })
 export class MoviesModule {}
