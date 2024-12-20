@@ -95,16 +95,16 @@ MovieSchema.pre('save', async function (next) {
 //   this.select('-__v');
 //   next();
 // });
-MovieSchema.pre(/^find/, async function (this: MovieDocument, next) {
-  // const query = this as Query<MovieDocument, Movie>;
-  // query.populate({
-  //   path: 'reviews',
-  //   select: '-__v',
-  // });
-  // next();
-  this.populate({
-    path: 'reviews',
-    select: '-__v ',
-  });
-  next();
-});
+// MovieSchema.pre(/^find/, async function (this: MovieDocument, next) {
+//   // const query = this as Query<MovieDocument, Movie>;
+//   // query.populate({
+//   //   path: 'reviews',
+//   //   select: '-__v',
+//   // });
+//   // next();
+//   this.populate({
+//     path: 'reviews',
+//     select: '-__v ',
+//   });
+//   next();
+// });

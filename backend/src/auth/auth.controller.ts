@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Post,
+  Req,
   Res,
   Session,
   UseGuards,
@@ -30,6 +31,7 @@ export class AuthController {
   async signin(
     @Body() body: SigninDTO,
     @Res() response: Response,
+    @Req() request: any,
     @Session() session: any,
   ) {
     const { email } = await this.usersService.findUser(body.email);

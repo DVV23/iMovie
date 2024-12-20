@@ -63,7 +63,13 @@ export class User {
     type: [mongoose.Schema.Types.ObjectId],
     ref: 'Review',
   })
-  reviews: mongoose.Schema.Types.ObjectId[];
+  reviews: mongoose.Types.ObjectId[];
+
+  @Prop({
+    type: Boolean,
+    default: true,
+  })
+  active: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
@@ -76,10 +82,10 @@ UserSchema.pre('save', async function (next) {
   next();
 });
 
-UserSchema.pre(/^find/, async function (this: UserDocument, next) {
-  this.populate({
-    path: 'reviews',
-    select: '-__v',
-  });
-  next();
-});
+// UserSchema.pre(/^find/, async function (this: UserDocument, next) {
+//   this.populate({
+//     path: 'reviews',
+//     select: '-__v',
+//   });
+//   next();
+// });

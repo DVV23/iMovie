@@ -17,24 +17,25 @@ export class Review {
     ref: 'Movie',
     required: [true, 'A review should belong to Movie'],
   })
-  forMovie: mongoose.Schema.Types.ObjectId;
+  forMovie: mongoose.Types.ObjectId;
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: [true, 'Review should belong to User'],
   })
-  createdByUser: mongoose.Schema.Types.ObjectId;
+  createdByUser: mongoose.Types.ObjectId;
 }
 
 export const ReviewSchema = SchemaFactory.createForClass(Review);
 
-ReviewSchema.pre(/^find/, async function (this: ReviewDocument, next) {
-  this.populate({
-    path: 'forMovie',
-  });
-  this.populate({
-    path: 'createdByUser',
-    select: '-__v',
-  });
-  next();
-});
+// ReviewSchema.pre(/^find/, async function (this: ReviewDocument, next) {
+//   this.populate({
+//     path: 'forMovie',
+//     select: 'title genre',
+//   });
+//   this.populate({
+//     path: 'createdByUser',
+//     select: '-__v -password',
+//   });
+//   next();
+// });

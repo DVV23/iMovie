@@ -13,7 +13,7 @@ import { MoviesService } from './movies.service';
 import { JwtAuthGuard } from 'src/guards/JWTGuard.guard';
 import { Movie, MovieDocument } from 'src/schemas/movies.schema';
 import { GetCurrentUser } from 'src/decorators/currentUser.decorator';
-import { User } from 'src/schemas/user.schema';
+import { User, UserDocument } from 'src/schemas/user.schema';
 import { CreateMovieDTO } from './dtos/createMovieDTO.dto';
 import { UpdateMovieDTO } from './dtos/updateMovieDTO.dto';
 import { ReviewsService } from 'src/reviews/reviews.service';
@@ -59,7 +59,7 @@ export class MoviesController {
   async createReviewForMovie(
     @Param('id') id: string,
     @Body() body: CreateReviewDTO,
-    @GetCurrentUser() user: User,
+    @GetCurrentUser() user: UserDocument,
   ): Promise<any> {
     const movie = (await this.moviesService.getMovies(id)) as MovieDocument;
     return await this.reviewsService.createReviewForMovie(movie, user, body);
