@@ -1,8 +1,11 @@
 import {
+  BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   NotFoundException,
+  Param,
   Post,
   UnauthorizedException,
   UseGuards,
@@ -36,5 +39,11 @@ export class UsersController {
   ): Promise<void | string> {
     if (!user) throw new UnauthorizedException('User not authenticated');
     return await this.usersService.updatePassword(body, user);
+  }
+  @UseGuards(AdminGuard)
+  @Delete('/deleteUser/:id')
+  async deleteUser(@Param('id') id: string): Promise<void | string> {
+    if (!id) throw new BadRequestException('Please provide ID of user');
+    return await this.usersService.deleteUser(id);
   }
 }

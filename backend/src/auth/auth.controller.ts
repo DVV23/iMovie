@@ -22,7 +22,7 @@ export class AuthController {
     private readonly usersService: UsersService,
   ) {}
   @Post('/signup')
-  async signup(@Body() body: SignupDTO): Promise<User> {
+  async signup(@Body() body: SignupDTO): Promise<string> {
     return await this.authService.signup(body);
   }
 

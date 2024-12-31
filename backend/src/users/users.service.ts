@@ -37,13 +37,13 @@ export class UsersService {
       throw new BadRequestException(err.message);
     }
   }
-  @UseGuards(AdminGuard)
+
+  // <--- ! to implement in the controller ! --->
   async findUser(email: string): Promise<User> {
     return await this.userModel.findOne({ email }).select('+password');
   }
-  @UseGuards(AdminGuard)
   async getAllUsers(): Promise<User[]> {
-    return await this.userModel.find();
+    return await this.userModel.find().where({ active: true });
   }
   async verifyUser(email: string, password: string): Promise<User> {
     const user = await this.userModel.findOne({ email }).select('+password');
@@ -70,6 +70,19 @@ export class UsersService {
     await user.save({ validateBeforeSave: true });
     if (!user.isModified) {
       throw new InternalServerErrorException('Password update failed');
+    }
+  }
+  async deleteUser(id: string): Promise<void | string> {
+    try {
+      const user = await this.userModel.findById(id);
+      if (!user) {
+        throw new BadRequestException('User for provided ID was not found.');
+      }
+      user.active = false;
+      await user.save({ validateBeforeSave: false });
+      return 'User was succesfully deleted';
+    } catch (err) {
+      throw new InternalServerErrorException(err.message);
     }
   }
 }

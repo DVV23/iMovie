@@ -28,9 +28,10 @@ export class AuthService {
     private usersService: UsersService,
   ) {}
 
-  async signup(body: SignupDTO): Promise<User> {
+  async signup(body: SignupDTO): Promise<string> {
     try {
-      return await this.usersService.signup(body);
+      await this.usersService.signup(body);
+      return 'You have succesfully signed up';
     } catch (err) {
       throw new BadRequestException(err.message);
     }
